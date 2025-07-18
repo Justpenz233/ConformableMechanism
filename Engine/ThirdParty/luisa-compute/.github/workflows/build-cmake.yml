@@ -1,0 +1,130 @@
+name: build-cmake
+
+on: [ push, pull_request ]
+
+jobs:
+  build-linux:
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler: [ gcc, clang ]
+        config: [ Release, Debug ]
+    name: Ubuntu / ${{ matrix.config }} / ${{ matrix.compiler }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: "Install Dependencies"
+        run: |
+          sudo apt-get update
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x llvm.sh
+          sudo ./llvm.sh 18 all
+          sudo apt-get -y install build-essential wget cmake ninja-build uuid-dev libxinerama-dev libxcursor-dev libxi-dev libvulkan-dev
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+      - name: "Setup CUDA"
+        run: |
+          wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2404/x86_64/cuda-keyring_1.1-1_all.deb
+          sudo dpkg -i cuda-keyring_1.1-1_all.deb
+          sudo apt-get update
+          sudo apt-get -y install cuda-toolkit
+      - name: "Setup Vulkan"
+        uses: humbletim/setup-vulkan-sdk@v1.2.0
+        with:
+          vulkan-query-version: 1.3.204.0
+          vulkan-components: Vulkan-Headers, Vulkan-Loader
+          vulkan-use-cache: true
+      - name: "Configure and Build"
+        run: |
+          if [ "${{ matrix.compiler }}" = "gcc" ]; then
+            export LUISA_CC=gcc
+            export LUISA_CXX=g++
+            export LUISA_FLAGS=""
+          else
+            export LUISA_CC=clang-18
+            export LUISA_CXX=clang++-18
+            export LUISA_FLAGS="-stdlib=libc++"
+          fi
+          cmake -S . -B build -G Ninja -D LUISA_COMPUTE_ENABLE_RUST=OFF -D LUISA_COMPUTE_ENABLE_REMOTE=OFF -D LUISA_COMPUTE_ENABLE_CPU=OFF -D CMAKE_BUILD_TYPE=${{ matrix.config }} -D CMAKE_C_COMPILER=${LUISA_CC} -D CMAKE_CXX_COMPILER=${LUISA_CXX} -D CMAKE_CXX_FLAGS="${LUISA_FLAGS}"
+          cmake --build build -j 16
+      - name: "Install"
+        run: |
+          if [ "${{ matrix.config }}" = "Release" ]; then
+            cmake --install build --prefix dist -v
+          fi
+
+  build-macos:
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler: [ homebrew-clang, system-clang ]
+        config: [ Release, Debug ]
+    name: macOS / ${{ matrix.config }} / ${{ matrix.compiler }}
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: "Install Dependencies"
+        run: |
+          brew install llvm molten-vk ninja cmake
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+      - name: "Configure and Build"
+        run: |
+          if [ "${{ matrix.compiler }}" = "homebrew-clang" ]; then
+            export CC=/opt/homebrew/opt/llvm/bin/clang
+            export CXX=/opt/homebrew/opt/llvm/bin/clang++
+          fi
+          cmake -S . -B build -G Ninja -D LUISA_COMPUTE_ENABLE_RUST=OFF -D LUISA_COMPUTE_ENABLE_REMOTE=OFF -D LUISA_COMPUTE_ENABLE_CPU=OFF -D CMAKE_BUILD_TYPE=${{ matrix.config }} -D LUISA_COMPUTE_ENABLE_UNITY_BUILD=OFF
+          cmake --build build -v
+      - name: "Install"
+        run: |
+          if [ "${{ matrix.config }}" = "Release" ]; then
+            cmake --install build --prefix dist -v
+          fi
+
+  build-windows:
+    strategy:
+      fail-fast: false
+      matrix:
+        config: [ Release, Debug ]
+        compiler: [ cl, clang, clang-cl ]
+    name: Windows / ${{ matrix.config }} / ${{ matrix.compiler }}
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: "Setup Ninja"
+        uses: ashutoshvarma/setup-ninja@master
+        with:
+          version: 1.11.1
+      - name: "Setup CUDA"
+        uses: Jimver/cuda-toolkit@v0.2.18
+      - name: "Setup Rust"
+        uses: actions-rust-lang/setup-rust-toolchain@v1.10.1
+      - name: "Setup Vulkan"
+        uses: humbletim/setup-vulkan-sdk@v1.2.0
+        with:
+          vulkan-query-version: 1.3.204.0
+          vulkan-components: Vulkan-Headers, Vulkan-Loader
+          vulkan-use-cache: true
+      - name: "Configure and Build"
+        shell: cmd
+        run: |
+          call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
+          cmake --version
+          ninja --version
+          IF "${{ matrix.compiler }}" == "clang" (
+            set CC=clang
+            set CXX=clang++
+          ) ELSE (
+            set CC=${{ matrix.compiler }}
+            set CXX=${{ matrix.compiler }}
+          )
+          cmake -S . -G Ninja -B build -D LUISA_COMPUTE_ENABLE_RUST=OFF -D LUISA_COMPUTE_ENABLE_REMOTE=OFF -D LUISA_COMPUTE_ENABLE_CPU=OFF -D CMAKE_BUILD_TYPE=${{ matrix.config }}
+          cmake --build build -v
+      - name: "Install"
+        run: |
+          cmake --install build --prefix dist -v
