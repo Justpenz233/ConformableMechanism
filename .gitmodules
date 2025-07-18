@@ -1,0 +1,3 @@
+[submodule "MechEngine"]
+	path = MechEngine
+	url = git@github.com:Justpenz233/MechEngine.git
