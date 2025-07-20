@@ -147,11 +147,18 @@ inline auto ExampleExperiment()
 
 ## Authors <a name = "authors"></a>
 - Siqi Li
+- Haoyu Tang
 - [Peng Song](https://songpenghit.github.io/)
 - [Bailin Deng](http://www.bdeng.me)
+- [Jianmin Zheng](https://personal.ntu.edu.sg/asjmzheng/)
 
 ## Acknowledgements <a name = "acknowledgement"></a>
-This work was supported by the Singapore MOE AcRF Tier 2 Grant (MOE-T2EP20222-0008).
+We thank the reviewers for their valuable comments. This work was supported by the MOE AcRF Tier 2 Grant of Singapore (MOE-T2EP20222-0008), the MOE AcRF Tier 1 Grant of Singapore (RG12/22), and the Taith Research Mobility Funding.
+
+
+
+
+
 
 
 
