@@ -5,8 +5,8 @@ message(STATUS "Third-party: creating targets 'Boost::boost'...")
 include(FetchContent)
 FetchContent_Declare(
     boost-cmake
-    GIT_REPOSITORY https://github.com/libigl/boost-cmake.git
-    GIT_TAG 6bcae68ffbaaefad4583a2642ce9ea53e5e01707
+    GIT_REPOSITORY URL https://archives.boost.io/release/1.86.0/source/boost_1_86_0.tar.gz
+    URL_HASH MD5=ac857d73bb754b718a039830b07b9624
 )
 
 set(PREVIOUS_CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
@@ -28,6 +28,7 @@ set(CMAKE_CXX_FLAGS "${PREVIOUS_CMAKE_CXX_FLAGS}")
 
 # Set VS target folders
 set(boost_modules
+    multiprecision
     container
     regex
     atomic
