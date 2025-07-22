@@ -17,7 +17,7 @@ If you make use of this repo in your scientific work, please cite our paper. For
 you can use the following bibtex snippet:
 
     @article {Li-2025-ConformMech, 
-    author   = {Siqi Li and Haoyu Tang and Bailin Deng and Jianmin Zheng and Peng Song}, 
+    author   = {Siqi Li and Haoyu Tang and Peng Song and Bailin Deng and Jianmin Zheng}, 
     title    = {Conformable Mechanisms on Freeform Surfaces}, 
     journal  = {Computers & Graphics (Proc. of Shape Modeling International)}, 
     year     = {2025}} 
