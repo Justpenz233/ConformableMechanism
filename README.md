@@ -27,6 +27,7 @@ you can use the following bibtex snippet:
 - [About ](#about-)
 - [Getting Started ](#getting-started-)
   - [Compilation](#compilation)
+- [Visualize a pre-computed result](#visualize-a-pre-computed-result)
 - [Create a Conformable Mechanism By Yourself](#create-a-conformable-mechanism-by-yourself)
   - [Step 1: step up the environment](#step-1-step-up-the-environment)
   - [Step 2: optimize](#step-2-optimize)
@@ -59,6 +60,11 @@ now run the ConformableMechanismExe from bin folder
 The integer following make -j is the number of threads supported by your CPU architecture. Replace it with your optimal value.
 
 During the compilation, the dependencies will be automatically downloaded and built. 
+
+## Visualize a pre-computed result
+We provide precomputed results for example scripts, you could visualize them by following the video below:
+
+<video src="Resource/Video.mp4" controls width="600"></video>
 
 ## Create a Conformable Mechanism By Yourself
 These instructions give an example to you of how to use our code to design a Conformable Mechanism.

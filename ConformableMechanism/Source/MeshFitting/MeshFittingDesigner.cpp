@@ -143,7 +143,7 @@ ObjectPtr<StaticMesh> MeshFittingDesigner:: CutSurface(SurfaceLinkageConfigurati
 		auto Mesh = JointMeshes[i];
 		static int JointMeshSweptVolumeSteps = GConfig.Get<int>("DesignerConfig", "JointMeshSweptVolumeSteps");
 		int Steps = JointMeshSweptVolumeSteps;
-		int GridSize = 200;
+		int GridSize = 100;
 		Config.LinkageSweptVolume[i] = Algorithm::GeometryProcess::SweptVolume(Mesh, Config.JointTransforms[i], Steps, GridSize)->GetThis<StaticMesh>();
 		Config.LinkageSweptVolume[i]->OffsetVertex(Tolerance);
 		LOG_INFO("End calc swept volume for joint {}", i);
