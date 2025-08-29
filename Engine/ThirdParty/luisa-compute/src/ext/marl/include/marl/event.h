@@ -136,7 +136,7 @@ class Event {
     bool signalled;
   };
   MARL_NO_EXPORT inline Event(marl::shared_ptr<Shared> shared)
-   : shared(shared) {}
+   : shared(std::move(shared)) {}
   marl::shared_ptr<Shared> shared;
 };
 
@@ -170,7 +170,7 @@ void Event::Shared::signal() {
   } else {
     cv.notify_all();
   }
-  for (auto dep : deps) {
+  for (auto &dep : deps) {
     dep->signal();
   }
 }

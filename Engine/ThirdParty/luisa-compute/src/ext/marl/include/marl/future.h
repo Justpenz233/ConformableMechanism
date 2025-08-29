@@ -21,9 +21,24 @@
 #include "containers.h"
 #include "export.h"
 #include "memory.h"
+
+#ifdef MARL_USE_SYSTEM_STL
+#include <optional>
+#else
 #include <EASTL/optional.h>
+#endif
 
 namespace marl {
+
+#ifdef MARL_USE_SYSTEM_STL
+using std::optional;
+using std::shared_ptr;
+using std::is_constructible_v;
+#else
+using eastl::optional;
+using eastl::shared_ptr;
+using eastl::is_constructible_v;
+#endif
 
 // Future is a synchronization primitive used to block until a signal is raised.
 template <typename T>
@@ -31,7 +46,7 @@ class Future {
  public:
   Future(Allocator* allocator = Allocator::Default);
   template <typename... Args>
-    requires(eastl::is_constructible_v<T, Args && ...>)
+    requires(marl::is_constructible_v<T, Args && ...>)
   void signal(Args&&...) const;
 
   // clear() clears the signaled state.
@@ -64,10 +79,10 @@ class Future {
 
     marl::mutex mutex;
     ConditionVariable cv;
-    eastl::optional<T> result;
+    marl::optional<T> result;
   };
 
-  const eastl::shared_ptr<Shared> shared;
+  const marl::shared_ptr<Shared> shared;
 };
 template <typename T>
 inline Future<T>::Shared::Shared(Allocator* allocator) : cv(allocator) {}
@@ -85,7 +100,7 @@ inline Future<T>::Future(Allocator* allocator /* = Allocator::Default */)
 
 template <typename T>
 template <typename... Args>
-  requires(eastl::is_constructible_v<T, Args && ...>)
+  requires(marl::is_constructible_v<T, Args && ...>)
 inline void Future<T>::signal(Args&&... args) const {
   shared->signal(std::forward<Args>(args)...);
 }
@@ -113,7 +128,7 @@ inline T& Future<T>::wait() const {
 template <typename T>
 inline bool Future<T>::test() const {
   marl::lock lock(shared->mutex);
-  if (!shared->dtor) {
+  if (!shared->result) {
     return false;
   }
   return true;
@@ -122,7 +137,7 @@ inline bool Future<T>::test() const {
 template <typename T>
 inline bool Future<T>::isSignalled() const {
   marl::lock lock(shared->mutex);
-  return shared->dtor;
+  return shared->result.has_value();
 }
 
 }  // namespace marl

@@ -26,14 +26,20 @@
 #include <mutex>
 #include <utility>  // std::forward
 #include <limits>   // std::numeric_limits
+
+#ifndef MARL_USE_SYSTEM_STL
 #include <EASTL/unique_ptr.h>
 #include <EASTL/shared_ptr.h>
+#endif
 
 namespace marl { using std::pair; using std::make_pair; }
 namespace marl { using std::array; using std::swap; }
-namespace marl { using eastl::unique_ptr; }
 namespace marl { using std::numeric_limits; }
-namespace marl { using eastl::make_shared; using eastl::shared_ptr; using eastl::weak_ptr; }
+#ifdef MARL_USE_SYSTEM_STL
+namespace marl { using std::unique_ptr; using std::make_shared; using std::shared_ptr; using std::weak_ptr; }
+#else
+namespace marl { using eastl::unique_ptr; using eastl::make_shared; using eastl::shared_ptr; using eastl::weak_ptr; }
+#endif
 namespace marl { using std::forward; using std::move; }
 namespace marl { using stdmutex = std::mutex; }
 

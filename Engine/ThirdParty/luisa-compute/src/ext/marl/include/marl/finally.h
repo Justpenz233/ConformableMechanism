@@ -26,11 +26,18 @@
 
 #include "export.h"
 #include <memory>
+
+#ifdef MARL_USE_SYSTEM_STL
+#include <functional>
+namespace marl { using std::function; }
+namespace marl { using std::make_shared; using std::shared_ptr; }
+#else
 #include <EASTL/functional.h>
 #include <EASTL/unique_ptr.h>
 #include <EASTL/shared_ptr.h>
 namespace marl { using eastl::make_shared; using eastl::shared_ptr; }
 namespace marl { using eastl::function; }
+#endif
 
 namespace marl {
 

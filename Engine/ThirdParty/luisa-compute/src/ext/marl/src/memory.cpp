@@ -17,7 +17,9 @@
 #include "marl/debug.h"
 #include "marl/sanitizers.h"
 
+#ifndef MARL_USE_SYSTEM_STL
 #include <EASTL/allocator.h>
+#endif
 #include <cstring>
 
 
@@ -189,8 +191,16 @@ marl::Allocation Allocator::allocate(const marl::Allocation::Request& request) {
   if (request.useGuards) {
     ptr = detail::pagedMalloc(request.alignment, request.size, true, true);
   } else {
+#ifdef MARL_USE_SYSTEM_STL
+#ifdef _WIN32
+    ptr = _aligned_malloc(request.size, request.alignment);
+#else
+    ptr = ::aligned_alloc(request.alignment, request.size);
+#endif
+#else
     ptr = eastl::GetDefaultAllocator()->allocate(request.size,
                                                  request.alignment, 0u);
+#endif
   }
 
   MARL_ASSERT(ptr != nullptr, "Allocation failed");
@@ -208,7 +218,15 @@ void Allocator::free(const marl::Allocation& allocation) {
     detail::pagedFree(allocation.ptr, allocation.request.alignment,
                       allocation.request.size, true, true);
   } else {
+#ifdef MARL_USE_SYSTEM_STL
+#ifdef _WIN32
+      _aligned_free(allocation.ptr);
+#else
+      ::free(allocation.ptr);
+#endif
+#else
     eastl::GetDefaultAllocator()->deallocate(allocation.ptr, allocation.request.size);
+#endif
   }
 }
 static Allocator alloc;

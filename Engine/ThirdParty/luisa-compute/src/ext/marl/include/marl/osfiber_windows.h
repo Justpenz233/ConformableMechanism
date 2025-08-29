@@ -14,8 +14,12 @@
 #pragma once
 #include "marl/memory.h"
 
-
+#ifdef MARL_USE_SYSTEM_STL
+#include <functional>
+namespace marl { using std::function; }
+#else
 namespace marl { using eastl::function; }
+#endif
 
 namespace marl {
 
