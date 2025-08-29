@@ -64,7 +64,11 @@ During the compilation, the dependencies will be automatically downloaded and bu
 ## Visualize a pre-computed result
 We provide precomputed results for example scripts, you could visualize them by following the video below:
 
-<video src="Resource/Video.mp4" controls width="600"></video>
+
+https://github.com/user-attachments/assets/05dade65-ef62-45f4-8038-27dd902d1abb
+
+
+
 
 ## Create a Conformable Mechanism By Yourself
 These instructions give an example to you of how to use our code to design a Conformable Mechanism.
