@@ -45,14 +45,17 @@ Our code can be run on macOS, Unbuntu (Linux), and Windows system. First clone t
 All the dependency will be automatically set up by git submodule or CMake Fetch Content. You do not need to manually install anything. Please make sure you are connected to the internet before compiling.
 
 ### Compilation
-
+[First: install pagmo](https://esa.github.io/pagmo2/install.html)
 ```
+$ brew install pagmo 
 $ cd [current folder path]
 $ mkdir build
 $ cd build
 $ cmake ..
-$ make -j 16
+$ make -j16
+now run the ConformableMechanismExe from bin folder
 ```
+
 The integer following make -j is the number of threads supported by your CPU architecture. Replace it with your optimal value.
 
 During the compilation, the dependencies will be automatically downloaded and built. 

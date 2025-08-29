@@ -8,6 +8,8 @@
 
 int main(int argc, char *argv[])
 {
+	std::cout << "Bin Path: " << argv[0] << std::endl;
+	std::cout << "Project Dir: " << PROJECT_DIR << std::endl;
     GEditor.Init(argv[0], PROJECT_DIR);
 	// GEditor.LoadWorld(MotionGenerationExample());
 	GEditor.LoadWorld(PathGenerationExample());

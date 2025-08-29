@@ -14,6 +14,6 @@ add_subdirectory(ConformableMechanism)
 add_subdirectory(Engine)
 
 
-add_executable(ConformableMechanism main.cpp)
-target_link_libraries(ConformableMechanism PUBLIC MechEngineEditor)
-target_compile_definitions(ConformableMechanism PRIVATE "PROJECT_DIR=\"${USER_PROJECT_ROOT_DIR}\"")
+add_executable(ConformableMechanismExe main.cpp)
+target_link_libraries(ConformableMechanismExe PUBLIC MechEngineEditor)
+target_compile_definitions(ConformableMechanismExe PRIVATE "PROJECT_DIR=\"${USER_PROJECT_ROOT_DIR}\"")
