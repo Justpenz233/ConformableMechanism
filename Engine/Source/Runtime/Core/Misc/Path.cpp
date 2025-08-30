@@ -38,7 +38,7 @@ Path Path::EnginLogDir()
 
 Path Path::RootDir()
 {
-	return _ExePath.parent_path();
+	return ProjectDir().parent_path();
 }
 Path Path::EngineDir()
 {
@@ -77,8 +77,11 @@ bool Path::CreateDirectory(const Path& InPath)
 }
 void Path::Init(const std::string& BinPath, const std::string& ProjectDir)
 {
-    _ExePath = ProjectDir;
-	_ExePath = _ExePath.parent_path() / "bin";
+
+	if (path(BinPath).is_absolute())
+		_ExePath = BinPath;
+	else
+		_ExePath = std::filesystem::absolute(BinPath);
 	_ProjectRootPath = ProjectDir;
 }
 
